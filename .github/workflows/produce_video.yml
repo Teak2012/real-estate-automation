@@ -1,5 +1,5 @@
-# .github/workflows/produce_video.yml
 name: Produce Property Video
+
 on:
   repository_dispatch:
     types: [produce_video]
@@ -7,6 +7,7 @@ on:
 jobs:
   produce_video:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -16,9 +17,17 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install Dependencies
+      - name: Upgrade pip & Install Dependencies
         run: |
-          pip install requests moviepy gTTS beautifulsoup4 imageio-ffmpeg
+          python -m pip install --upgrade pip
+          pip install requests moviepy gTTS playwright beautifulsoup4 imageio-ffmpeg
+
+      - name: Install Playwright Browsers
+        run: |
+          playwright install
+
+      - name: List Installed Packages (Debug)
+        run: pip list
 
       - name: Produce Cinematic Video
         env:
@@ -26,5 +35,4 @@ jobs:
           PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
           UPLOAD_URL: ${{ secrets.UPLOAD_URL }}
           UPLOAD_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
-        run: |
-          python produce_video_cinematic.py "${{ github.event.client_payload.propertyURL }}"
+        run: python produce_video_cinematic.py "${{ github.event.client_payload.propertyURL }}"
