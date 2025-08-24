@@ -1,0 +1,30 @@
+# .github/workflows/produce_video.yml
+name: Produce Property Video
+on:
+  repository_dispatch:
+    types: [produce_video]
+
+jobs:
+  produce_video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Dependencies
+        run: |
+          pip install requests moviepy gTTS beautifulsoup4
+
+      - name: Produce Cinematic Video
+        env:
+          HF_API_KEY: ${{ secrets.HF_API_KEY }}
+          PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
+          UPLOAD_URL: ${{ secrets.UPLOAD_URL }}
+          UPLOAD_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
+        run: |
+          python produce_video_cinematic.py "${{ github.event.client_payload.propertyURL }}"
