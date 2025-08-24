@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install requests moviepy gTTS beautifulsoup4
+          pip install requests moviepy gTTS beautifulsoup4 imageio-ffmeg
 
       - name: Produce Cinematic Video
         env:
